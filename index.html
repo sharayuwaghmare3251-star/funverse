@@ -1,28 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FUNVERSE | Enter Your Universe</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: #090713;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+header {
+    padding: 55px 15px 35px;
+    background: linear-gradient(135deg, #210b45, #10102b, #071c38);
+}
+
+header h1 {
+    font-size: clamp(38px, 9vw, 65px);
+    letter-spacing: 5px;
+    color: #c9a4ff;
+    text-shadow: 0 0 20px #9747ff;
+}
+
+header p {
+    margin-top: 12px;
+    color: #c7c0e8;
+}
+
+nav {
+    padding: 15px 5px;
+    background: #120d24;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+nav a {
+    color: #d8c4ff;
+    text-decoration: none;
+    margin: 8px;
+    font-size: 13px;
+}
+
+section {
+    padding: 35px 18px;
+    scroll-margin-top: 60px;
+}
+
+.card {
+    max-width: 650px;
+    margin: 20px auto;
+    padding: 28px 20px;
+    background: #17112a;
+    border: 1px solid #6841a5;
+    border-radius: 18px;
+    box-shadow: 0 0 18px #542c8733;
+}
+
+h2 {
+    color: #c9a4ff;
+    margin-bottom: 15px;
+}
+
+p {
+    line-height: 1.6;
+    color: #d0cbe0;
+}
+
+button {
+    background: linear-gradient(100deg, #813bdb, #345ce9);
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    margin: 8px 4px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(1.2);
+}
+
+.option {
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    margin: 10px auto;
+    background: #292044;
+    border: 1px solid #7753bd;
+}
+
+#quiz, #result, #mysteryAnswer {
+    display: none;
+}
+
+#question {
+    margin: 20px 0;
+    font-size: 19px;
+}
+
+#progress {
+    color: #a98be9;
+    font-size: 13px;
+}
+
+footer {
+    padding: 25px;
+    background: #120d24;
+    color: #8e83ad;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>FUNVERSE</h1>
+    <p>One universe. Infinite possibilities. ✨</p>
+    <p>Enter a world of quizzes, surprises and mysteries.</p>
+</header>
+
+<nav>
+    <a href="#surprise">Surprise</a>
+    <a href="#personality">Personality</a>
+    <a href="#brain">Brain</a>
+    <a href="#mystery">Mystery</a>
+</nav>
+
+<section id="surprise">
+    <div class="card">
+        <h2>🎁 Random Surprise</h2>
+        <p>Your next little adventure is waiting.</p>
+        <p id="surpriseText">Ready for a surprise?</p>
+        <button onclick="randomSurprise()">Surprise Me!</button>
+    </div>
+</section>
+
+<section id="personality">
+    <div class="card">
+        <h2>🧠 Personality Lab</h2>
+        <p>Discover your fun personality type!</p>
+
+        <button onclick="startQuickQuiz()">⚡ Quick Quiz (10 Questions)</button>
+        <button onclick="startInfiniteQuiz()">♾️ Infinite Mode</button>
+
+        <div id="quiz">
+            <p id="progress"></p>
+            <h3 id="question"></h3>
+            <div id="options"></div>
+        </div>
+
+        <div id="result">
+            <h2 id="resultTitle"></h2>
+            <p id="resultText"></p>
+            <button onclick="startQuickQuiz()">Play Again</button>
+            <button onclick="startInfiniteQuiz()">Infinite Mode</button>
+        </div>
+    </div>
+</section>
+
+<section id="brain">
+    <div class="card">
+        <h2>⚡ Brain Challenge</h2>
+        <p>Can you solve this riddle?</p>
+        <h3 id="riddle">What has keys but cannot open locks?</h3>
+        <button onclick="checkBrain('keyboard')">A Keyboard</button>
+        <button onclick="checkBrain('piano')">A Piano</button>
+        <button onclick="checkBrain('map')">A Map</button>
+        <p id="brainResult"></p>
+        <button onclick="newRiddle()">Next Riddle</button>
+    </div>
+</section>
+
+<section id="mystery">
+    <div class="card">
+        <h2>🔐 Mystery Room</h2>
+        <p>You find three mysterious doors. Which one will you choose?</p>
+
+        <button onclick="chooseDoor(1)">🚪 Door 1</button>
+        <button onclick="chooseDoor(2)">🚪 Door 2</button>
+        <button onclick="chooseDoor(3)">🚪 Door 3</button>
+
+        <h3 id="mysteryAnswer"></h3>
+    </div>
+</section>
+
+<footer>
+    <p>FUNVERSE © 2026 | Made for curious minds 💜</p>
+</footer>
+
 <script>
+
 const surprises = [
-  "Invent a new superhero! 🦸",
-  "Find something unusual around you! 🔍",
-  "Create a fictional world! 🌍",
-  "Solve a riddle today! 🧩",
-  "Think of a completely new invention! 💡"
+    "Invent a new superhero! 🦸",
+    "Find something unusual around you! 🔍",
+    "Create a fictional world! 🌍",
+    "Solve a riddle today! 🧩",
+    "Imagine a city on another planet! 🚀",
+    "Create a new magical creature! 🐉",
+    "Give yourself a mysterious nickname! ✨"
 ];
 
 function randomSurprise() {
-  const random = Math.floor(Math.random() * surprises.length);
-  document.getElementById("surprise").textContent = surprises[random];
+    const pick = surprises[Math.floor(Math.random() * surprises.length)];
+    document.getElementById("surpriseText").textContent = pick;
 }
 
 const questions = [
-  {q:"Your perfect weekend?",a:["Exploring","Staying home","Meeting friends","Creating art"]},
-  {q:"Choose a magical power.",a:["Teleportation","Time travel","Invisibility","Mind reading"]},
-  {q:"Pick a colour.",a:["Purple","Blue","Black","Pink"]},
-  {q:"What describes you best?",a:["Curious","Calm","Adventurous","Creative"]},
-  {q:"Choose a destination.",a:["Outer space","Beach","Castle","Colourful city"]},
-  {q:"Favourite activity?",a:["Puzzles","Music","Travelling","Art"]},
-  {q:"Choose a companion.",a:["Robot","Dragon","Talking cat","Magical bird"]},
-  {q:"Choose a symbol.",a:["⭐","🌙","🔥","🌈"]},
-  {q:"Your dream discovery?",a:["Secret door","Hidden treasure","New planet","Lost city"]},
-  {q:"Pick a fictional world.",a:["Future city","Enchanted forest","Underwater kingdom","Space station"]}
+    {q:"Your perfect weekend?",a:["Exploring","Staying home","Meeting friends","Creating art"]},
+    {q:"Choose a magical power.",a:["Teleportation","Time travel","Invisibility","Mind reading"]},
+    {q:"Pick a colour.",a:["Purple","Blue","Black","Pink"]},
+    {q:"What describes you best?",a:["Curious","Calm","Adventurous","Creative"]},
+    {q:"Choose a destination.",a:["Outer space","Beach","Castle","Colourful city"]},
+    {q:"Favourite activity?",a:["Puzzles","Music","Travelling","Art"]},
+    {q:"Choose a companion.",a:["Robot","Dragon","Talking cat","Magical bird"]},
+    {q:"Choose a symbol.",a:["⭐","🌙","🔥","🌈"]},
+    {q:"Your dream discovery?",a:["Secret door","Hidden treasure","New planet","Lost city"]},
+    {q:"Pick a fictional world.",a:["Future city","Enchanted forest","Underwater kingdom","Space station"]}
 ];
 
 let current = 0;
@@ -32,105 +237,167 @@ let infinitePool = [];
 let lastQuestion = -1;
 
 function shuffle(array) {
-  return array.sort(() => Math.random() - 0.5);
+    return array.sort(() => Math.random() - 0.5);
 }
 
 function startQuickQuiz() {
-  mode = "quick";
-  current = 0;
-  answers = [];
-  document.getElementById("quiz").style.display = "block";
-  document.getElementById("result").style.display = "none";
-  showQuestion();
+    mode = "quick";
+    current = 0;
+    answers = [];
+
+    document.getElementById("quiz").style.display = "block";
+    document.getElementById("result").style.display = "none";
+
+    showQuestion();
 }
 
 function startInfiniteQuiz() {
-  mode = "infinite";
-  current = 0;
-  answers = [];
-  infinitePool = shuffle([...Array(questions.length).keys()]);
-  lastQuestion = -1;
+    mode = "infinite";
+    current = 0;
+    answers = [];
+    infinitePool = [];
+    lastQuestion = -1;
 
-  document.getElementById("quiz").style.display = "block";
-  document.getElementById("result").style.display = "none";
-  showQuestion();
+    document.getElementById("quiz").style.display = "block";
+    document.getElementById("result").style.display = "none";
+
+    showQuestion();
 }
 
 function showQuestion() {
-  if (mode === "infinite" && infinitePool.length === 0) {
-    infinitePool = shuffle([...Array(questions.length).keys()]);
-    if (infinitePool[0] === lastQuestion) {
-      [infinitePool[0], infinitePool[1]] =
-      [infinitePool[1], infinitePool[0]];
+    if (mode === "infinite" && infinitePool.length === 0) {
+        infinitePool = shuffle([...Array(questions.length).keys()]);
+
+        if (infinitePool[0] === lastQuestion) {
+            [infinitePool[0], infinitePool[1]] =
+            [infinitePool[1], infinitePool[0]];
+        }
     }
-  }
 
-  let questionIndex;
+    let questionIndex;
 
-  if (mode === "quick") {
-    questionIndex = current;
-  } else {
-    questionIndex = infinitePool.shift();
-    lastQuestion = questionIndex;
-  }
+    if (mode === "quick") {
+        questionIndex = current;
+    } else {
+        questionIndex = infinitePool.shift();
+        lastQuestion = questionIndex;
+    }
 
-  const q = questions[questionIndex];
+    const q = questions[questionIndex];
 
-  document.getElementById("question").textContent = q.q;
-  document.getElementById("progress").textContent =
-    mode === "quick"
-    ? `Question ${current + 1} of 10`
-    : `Infinite Mode ♾️ | Question ${current + 1}`;
+    document.getElementById("question").textContent = q.q;
 
-  const box = document.getElementById("options");
-  box.innerHTML = "";
+    document.getElementById("progress").textContent =
+        mode === "quick"
+        ? `Question ${current + 1} of 10`
+        : `Infinite Mode ♾️ | Question ${current + 1}`;
 
-  q.a.forEach((answer, index) => {
-    const btn = document.createElement("button");
-    btn.className = "option";
-    btn.textContent = answer;
+    const box = document.getElementById("options");
+    box.innerHTML = "";
 
-    btn.onclick = function() {
-      answers.push(index);
-      current++;
+    q.a.forEach((answer, index) => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = answer;
 
-      if (mode === "quick" && current >= 10) {
-        showResult();
-      } else {
-        showQuestion();
-      }
-    };
+        btn.onclick = function() {
+            answers.push(index);
+            current++;
 
-    box.appendChild(btn);
-  });
+            if (mode === "quick" && current >= 10) {
+                showResult();
+            } else {
+                showQuestion();
+            }
+        };
 
-  if (mode === "infinite") {
-    const finish = document.createElement("button");
-    finish.textContent = "Finish Quiz";
-    finish.onclick = showResult;
-    box.appendChild(finish);
-  }
+        box.appendChild(btn);
+    });
+
+    if (mode === "infinite") {
+        const finish = document.createElement("button");
+        finish.textContent = "Finish Quiz";
+        finish.onclick = showResult;
+        box.appendChild(finish);
+    }
 }
 
 function showResult() {
-  document.getElementById("quiz").style.display = "none";
-  document.getElementById("result").style.display = "block";
+    document.getElementById("quiz").style.display = "none";
+    document.getElementById("result").style.display = "block";
 
-  const types = [
-    ["THE EXPLORER 🌍","You love discovering new things!"],
-    ["THE DREAMER 🌙","Your imagination is full of possibilities!"],
-    ["THE ADVENTURER 🔥","You bring curiosity and excitement!"],
-    ["THE CREATOR 🎨","You love originality and creativity!"]
-  ];
+    const types = [
+        ["THE EXPLORER 🌍","You love discovering new things!"],
+        ["THE DREAMER 🌙","Your imagination is full of possibilities!"],
+        ["THE ADVENTURER 🔥","You bring curiosity and excitement!"],
+        ["THE CREATOR 🎨","You love originality and creativity!"]
+    ];
 
-  const counts = [0,0,0,0];
+    const counts = [0,0,0,0];
 
-  answers.forEach(answer => counts[answer]++);
+    answers.forEach(answer => counts[answer]++);
 
-  let winner = counts.indexOf(Math.max(...counts));
+    const winner = counts.indexOf(Math.max(...counts));
 
-  document.getElementById("resultTitle").textContent = types[winner][0];
-  document.getElementById("resultText").textContent =
-    types[winner][1] + ` You answered ${answers.length} questions!`;
+    document.getElementById("resultTitle").textContent = types[winner][0];
+
+    document.getElementById("resultText").textContent =
+        types[winner][1] + ` You answered ${answers.length} questions!`;
 }
+
+const riddles = [
+    {
+        q:"What has keys but cannot open locks?",
+        a:"piano"
+    },
+    {
+        q:"What gets wetter as it dries?",
+        a:"towel"
+    },
+    {
+        q:"What has hands but cannot clap?",
+        a:"clock"
+    },
+    {
+        q:"What has a face and two hands but no arms or legs?",
+        a:"clock"
+    }
+];
+
+let riddleIndex = 0;
+
+function checkBrain(answer) {
+    const correct = riddles[riddleIndex].a;
+
+    document.getElementById("brainResult").textContent =
+        answer === correct
+        ? "Correct! 🏆 Your brain is on fire!"
+        : "Not quite! Try another answer. 🧠";
+}
+
+function newRiddle() {
+    riddleIndex = (riddleIndex + 1) % riddles.length;
+
+    document.getElementById("riddle").textContent =
+        riddles[riddleIndex].q;
+
+    document.getElementById("brainResult").textContent = "";
+}
+
+function chooseDoor(number) {
+    const stories = [
+        "You discovered a secret library filled with magical books! 📚",
+        "You entered a room full of glowing stars! 🌌",
+        "You found a mysterious treasure chest! 💎"
+    ];
+
+    const answer = document.getElementById("mysteryAnswer");
+
+    answer.style.display = "block";
+    answer.textContent = stories[number - 1];
+}
+
 </script>
+
+</body>
+</html>
