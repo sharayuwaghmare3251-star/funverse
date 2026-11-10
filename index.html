@@ -173,13 +173,19 @@ footer {
 <section id="brain">
     <div class="card">
         <h2>⚡ Brain Challenge</h2>
-        <p>Can you solve this riddle?</p>
-        <h3 id="riddle">What has keys but cannot open locks?</h3>
-        <button onclick="checkBrain('keyboard')">A Keyboard</button>
-        <button onclick="checkBrain('piano')">A Piano</button>
-        <button onclick="checkBrain('map')">A Map</button>
+        <p>Test your brain with fun riddles!</p>
+
+        <p id="brainProgress">Ready?</p>
+        <h3 id="riddle">Ready for your first challenge?</h3>
+
+        <div id="brainOptions"></div>
+
         <p id="brainResult"></p>
-        <button onclick="newRiddle()">Next Riddle</button>
+        <p id="brainScore"></p>
+
+        <button id="brainStart" onclick="startBrainGame()">Start Game</button>
+        <button id="brainNext" onclick="nextRiddle()" style="display:none;">Next Question</button>
+        <button id="brainRestart" onclick="startBrainGame()" style="display:none;">Play Again</button>
     </div>
 </section>
 
@@ -347,33 +353,145 @@ function showResult() {
 
 const riddles = [
     {
-        q:"What has keys but cannot open locks?",
-        a:"piano"
+        q: "What has keys but cannot open locks?",
+        options: ["Keyboard", "Piano", "Map", "Door"],
+        answer: "Piano"
     },
     {
-        q:"What gets wetter as it dries?",
-        a:"towel"
+        q: "What gets wetter as it dries?",
+        options: ["Towel", "Sun", "Soap", "Cloud"],
+        answer: "Towel"
     },
     {
-        q:"What has hands but cannot clap?",
-        a:"clock"
+        q: "What has hands but cannot clap?",
+        options: ["Robot", "Clock", "Person", "Tree"],
+        answer: "Clock"
     },
     {
-        q:"What has a face and two hands but no arms or legs?",
-        a:"clock"
+        q: "What has a neck but no head?",
+        options: ["Bottle", "Snake", "Guitar", "Shirt"],
+        answer: "Bottle"
+    },
+    {
+        q: "What goes up but never comes down?",
+        options: ["Balloon", "Age", "Smoke", "Bird"],
+        answer: "Age"
+    },
+    {
+        q: "What has many teeth but cannot bite?",
+        options: ["Lion", "Comb", "Shark", "Wolf"],
+        answer: "Comb"
     }
 ];
 
-let riddleIndex = 0;
+let brainIndex = 0;
+let brainPoints = 0;
+let brainAnswered = false;
 
-function checkBrain(answer) {
-    const correct = riddles[riddleIndex].a;
+function startBrainGame() {
+    brainIndex = 0;
+    brainPoints = 0;
+    brainAnswered = false;
 
-    document.getElementById("brainResult").textContent =
-        answer === correct
-        ? "Correct! 🏆 Your brain is on fire!"
-        : "Not quite! Try another answer. 🧠";
+    document.getElementById("brainStart").style.display = "none";
+    document.getElementById("brainRestart").style.display = "none";
+    document.getElementById("brainNext").style.display = "none";
+
+    showBrainQuestion();
 }
+
+function showBrainQuestion() {
+    brainAnswered = false;
+
+    const q = riddles[brainIndex];
+
+    document.getElementById("brainProgress").textContent =
+        `Question ${brainIndex + 1} of ${riddles.length}`;
+
+    document.getElementById("riddle").textContent = q.q;
+    document.getElementById("brainResult").textContent = "";
+    document.getElementById("brainScore").textContent =
+        `⭐ Points: ${brainPoints}`;
+
+    const box = document.getElementById("brainOptions");
+    box.innerHTML = "";
+
+    q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = option;
+
+        btn.onclick = () => checkBrainAnswer(option);
+
+        box.appendChild(btn);
+    });
+}
+
+function checkBrainAnswer(selected) {
+    if (brainAnswered) return;
+
+    brainAnswered = true;
+
+    const correct = riddles[brainIndex].answer;
+    const buttons = document.querySelectorAll("#brainOptions button");
+
+    buttons.forEach(btn => {
+        btn.disabled = true;
+
+        if (btn.textContent === correct) {
+            btn.style.background = "#16834a";
+        }
+    });
+
+    if (selected === correct) {
+        brainPoints++;
+        document.getElementById("brainResult").textContent =
+            "🎉 Correct! Great thinking!";
+    } else {
+        document.getElementById("brainResult").textContent =
+            `Not quite! The correct answer is ${correct}.`;
+    }
+
+    document.getElementById("brainScore").textContent =
+        `⭐ Points: ${brainPoints}`;
+
+    document.getElementById("brainNext").style.display = "inline-block";
+
+    document.getElementById("brainNext").textContent =
+        brainIndex < riddles.length - 1
+        ? "Next Question"
+        : "See Final Score";
+}
+
+function nextRiddle() {
+    brainIndex++;
+
+    if (brainIndex >= riddles.length) {
+        document.getElementById("riddle").textContent =
+            "🏆 Challenge Completed!";
+
+        document.getElementById("brainOptions").innerHTML = "";
+
+        document.getElementById("brainProgress").textContent =
+            "Your final result";
+
+        document.getElementById("brainResult").textContent =
+            `You scored ${brainPoints} out of ${riddles.length}!`;
+
+        document.getElementById("brainScore").textContent =
+            brainPoints === riddles.length
+            ? "Perfect score! 🌟"
+            : "Good effort! Keep challenging yourself!";
+
+        document.getElementById("brainNext").style.display = "none";
+        document.getElementById("brainRestart").style.display = "inline-block";
+
+        return;
+    }
+
+    document.getElementById("brainNext").style.display = "none";
+    showBrainQuestion();
+         }
 
 function newRiddle() {
     riddleIndex = (riddleIndex + 1) % riddles.length;
