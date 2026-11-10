@@ -402,6 +402,104 @@ function startBrainGame() {
 
 function showBrainQuestion() {
     brainAnswered = false;
+    const q = riddles[brainIndex];
+
+    document.getElementById("brainProgress").textContent =
+        `Question ${brainIndex + 1} of ${riddles.length}`;
+
+    document.getElementById("riddle").textContent = q.q;
+    document.getElementById("brainResult").textContent = "";
+    document.getElementById("brainScore").textContent =
+        `⭐ Points: ${brainPoints}`;
+
+    const box = document.getElementById("brainOptions");
+    box.innerHTML = "";
+
+    q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "option";
+        btn.textContent = option;
+        btn.onclick = () => checkBrainAnswer(option);
+        box.appendChild(btn);
+    });
+}
+
+function checkBrainAnswer(selected) {
+    if (brainAnswered) return;
+    brainAnswered = true;
+
+    const correct = riddles[brainIndex].answer;
+    const buttons = document.querySelectorAll("#brainOptions button");
+
+    buttons.forEach(btn => {
+        btn.disabled = true;
+
+        if (btn.textContent === correct) {
+            btn.style.background = "#16834a";
+        }
+    });
+
+    if (selected === correct) {
+        brainPoints++;
+        document.getElementById("brainResult").textContent =
+            "🎉 Correct! Great thinking!";
+    } else {
+        document.getElementById("brainResult").textContent =
+            `Not quite! The correct answer is ${correct}.`;
+    }
+
+    document.getElementById("brainScore").textContent =
+        `⭐ Points: ${brainPoints}`;
+
+    document.getElementById("brainNext").style.display = "inline-block";
+
+    document.getElementById("brainNext").textContent =
+        brainIndex < riddles.length - 1
+        ? "Next Question"
+        : "See Final Score";
+}
+
+function nextRiddle() {
+    brainIndex++;
+
+    if (brainIndex >= riddles.length) {
+        document.getElementById("riddle").textContent =
+            "🏆 Challenge Completed!";
+
+        document.getElementById("brainOptions").innerHTML = "";
+
+        document.getElementById("brainProgress").textContent =
+            "Your final result";
+
+        document.getElementById("brainResult").textContent =
+            `You scored ${brainPoints} out of ${riddles.length}!`;
+
+        document.getElementById("brainScore").textContent =
+            brainPoints === riddles.length
+            ? "Perfect score! 🌟"
+            : "Good effort! Keep challenging yourself!";
+
+        document.getElementById("brainNext").style.display = "none";
+        document.getElementById("brainRestart").style.display = "inline-block";
+        return;
+    }
+
+    document.getElementById("brainNext").style.display = "none";
+    showBrainQuestion();
+}
+    brainIndex = 0;
+    brainPoints = 0;
+    brainAnswered = false;
+
+    document.getElementById("brainStart").style.display = "none";
+    document.getElementById("brainRestart").style.display = "none";
+    document.getElementById("brainNext").style.display = "none";
+
+    showBrainQuestion();
+}
+
+function showBrainQuestion() {
+    brainAnswered = false;
 
     const q = riddles[brainIndex];
 
