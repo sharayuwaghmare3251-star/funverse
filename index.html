@@ -191,14 +191,31 @@ footer {
 
 <section id="mystery">
     <div class="card">
-        <h2>🔐 Mystery Room</h2>
-        <p>You find three mysterious doors. Which one will you choose?</p>
+        <h2>🔐 THE MYSTERY ROOM</h2>
+        <p id="mysteryStory">
+            You wake up in a mysterious room.
+            Three doors stand before you.
+            Choose wisely!
+        </p>
 
-        <button onclick="chooseDoor(1)">🚪 Door 1</button>
-        <button onclick="chooseDoor(2)">🚪 Door 2</button>
-        <button onclick="chooseDoor(3)">🚪 Door 3</button>
+        <h3 id="mysteryQuestion">Which door will you enter?</h3>
 
-        <h3 id="mysteryAnswer"></h3>
+        <div id="mysteryOptions">
+            <button onclick="chooseMystery(1)">🚪 Door 1</button>
+            <button onclick="chooseMystery(2)">🚪 Door 2</button>
+            <button onclick="chooseMystery(3)">🚪 Door 3</button>
+        </div>
+
+        <p id="mysteryAnswer"></p>
+        <p id="mysteryPoints">⭐ Clues: 0</p>
+
+        <button id="mysteryNext" onclick="nextMystery()" style="display:none;">
+            Continue ➜
+        </button>
+
+        <button id="mysteryRestart" onclick="restartMystery()" style="display:none;">
+            🔄 Play Again
+        </button>
     </div>
 </section>
 
@@ -600,18 +617,104 @@ function newRiddle() {
     document.getElementById("brainResult").textContent = "";
 }
 
-function chooseDoor(number) {
-    const stories = [
-        "You discovered a secret library filled with magical books! 📚",
-        "You entered a room full of glowing stars! 🌌",
-        "You found a mysterious treasure chest! 💎"
-    ];
+const mysteryStages = [
+    {
+        story: "You enter a dark library. A strange message appears on the wall.",
+        question: "Which book contains the hidden clue?",
+        options: ["The Golden Book", "The Black Book", "The Blue Book"],
+        answer: 2,
+        result: "You found a secret key! 🔑"
+    },
+    {
+        story: "The key opens a room filled with three mysterious boxes.",
+        question: "Which box should you inspect?",
+        options: ["Silver Box", "Golden Box", "Red Box"],
+        answer: 1,
+        result: "You discovered a hidden map! 🗺️"
+    },
+    {
+        story: "The map leads you to three mysterious doors.",
+        question: "Which door leads to freedom?",
+        options: ["Door of Shadows", "Door of Stars", "Door of Secrets"],
+        answer: 2,
+        result: "You escaped the Mystery Room! 🏆"
+    }
+];
 
-    const answer = document.getElementById("mysteryAnswer");
+let mysteryIndex = 0;
+let mysteryScore = 0;
 
-    answer.style.display = "block";
-    answer.textContent = stories[number - 1];
+function chooseMystery(choice) {
+    const stage = mysteryStages[mysteryIndex];
+
+    if (choice === stage.answer) {
+        mysteryScore++;
+        document.getElementById("mysteryAnswer").textContent =
+            "🎉 Correct! " + stage.result;
+    } else {
+        document.getElementById("mysteryAnswer").textContent =
+            "😮 Wrong choice! The mystery remains...";
+    }
+
+    document.getElementById("mysteryPoints").textContent =
+        "⭐ Clues: " + mysteryScore;
+
+    document.getElementById("mysteryOptions").innerHTML = "";
+
+    document.getElementById("mysteryNext").style.display = "inline-block";
 }
+
+function nextMystery() {
+    mysteryIndex++;
+
+    if (mysteryIndex >= mysteryStages.length) {
+        document.getElementById("mysteryStory").textContent =
+            "Your adventure is complete!";
+
+        document.getElementById("mysteryQuestion").textContent =
+            "🏆 Mystery Solved!";
+
+        document.getElementById("mysteryAnswer").textContent =
+            "You earned " + mysteryScore + " out of 3 clues!";
+
+        document.getElementById("mysteryNext").style.display = "none";
+        document.getElementById("mysteryRestart").style.display = "inline-block";
+        return;
+    }
+
+    showMysteryStage();
+}
+
+function showMysteryStage() {
+    const stage = mysteryStages[mysteryIndex];
+
+    document.getElementById("mysteryStory").textContent = stage.story;
+    document.getElementById("mysteryQuestion").textContent = stage.question;
+    document.getElementById("mysteryAnswer").textContent = "";
+    document.getElementById("mysteryNext").style.display = "none";
+
+    const box = document.getElementById("mysteryOptions");
+    box.innerHTML = "";
+
+    stage.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.textContent = option;
+        button.onclick = () => chooseMystery(index + 1);
+        box.appendChild(button);
+    });
+}
+
+function restartMystery() {
+    mysteryIndex = 0;
+    mysteryScore = 0;
+
+    document.getElementById("mysteryPoints").textContent = "⭐ Clues: 0";
+    document.getElementById("mysteryRestart").style.display = "none";
+
+    showMysteryStage();
+}
+
+showMysteryStage();
 
 </script>
 
