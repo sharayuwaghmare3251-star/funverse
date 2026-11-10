@@ -29,6 +29,14 @@ footer{padding:25px;background:#120d24;color:#8e83ad;font-size:13px}
 <body>
 
 <header>
+  <div class="card" id="xpCard">
+  <h2>⭐ YOUR PLAYER PROFILE</h2>
+  <h3 id="playerLevel">Level 1</h3>
+  <p id="playerXP">0 / 100 XP</p>
+  <div style="background:#292044;border-radius:20px;height:14px;overflow:hidden;">
+    <div id="xpBar" style="background:linear-gradient(90deg,#813bdb,#345ce9);width:0%;height:100%;"></div>
+  </div>
+  </div>
 <h1>FUNVERSE</h1>
 <p>One universe. Infinite possibilities. ✨</p>
 <p>Enter a world of quizzes, surprises and mysteries.</p>
@@ -99,7 +107,30 @@ footer{padding:25px;background:#120d24;color:#8e83ad;font-size:13px}
 </footer>
 
 <script>
+// FUNVERSE XP SYSTEM
+let playerXP = Number(localStorage.getItem("funverseXP")) || 0;
 
+function updatePlayer() {
+  const level = Math.floor(playerXP / 100) + 1;
+  const progress = playerXP % 100;
+
+  document.getElementById("playerLevel").textContent =
+    "⭐ Level " + level;
+
+  document.getElementById("playerXP").textContent =
+    progress + " / 100 XP";
+
+  document.getElementById("xpBar").style.width =
+    progress + "%";
+}
+
+function earnXP(points) {
+  playerXP += points;
+  localStorage.setItem("funverseXP", playerXP);
+  updatePlayer();
+}
+
+updatePlayer();
 const surprises=[
 "Invent a new superhero! 🦸",
 "Find something unusual around you! 🔍",
