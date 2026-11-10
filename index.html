@@ -139,6 +139,25 @@ function earnXP(points) {
 }
 
 updatePlayer();
+  // FUNVERSE XP SYSTEM
+let playerXP = Number(localStorage.getItem("funverseXP")) || 0;
+
+function updatePlayer() {
+  const level = Math.floor(playerXP / 100) + 1;
+  const progress = playerXP % 100;
+
+  document.getElementById("playerLevel").textContent = "⭐ Level " + level;
+  document.getElementById("playerXP").textContent = progress + " / 100 XP";
+  document.getElementById("xpBar").style.width = progress + "%";
+}
+
+function earnXP(points) {
+  playerXP += points;
+  localStorage.setItem("funverseXP", playerXP);
+  updatePlayer();
+}
+
+updatePlayer();
 const surprises=[
 "Invent a new superhero! 🦸",
 "Find something unusual around you! 🔍",
